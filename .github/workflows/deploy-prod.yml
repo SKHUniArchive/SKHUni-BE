@@ -43,8 +43,8 @@ jobs:
       - name: Docker build & push to prod
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGENAME }}:latest .
-          docker push ${{ secrets.DOCKER_IMAGENAME }}:latest
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_PROD_IMAGENAME }}:latest .
+          docker push ${{ secrets.DOCKER_PROD_IMAGENAME }}:latest
 
       - name: Deploy to prod
         uses: appleboy/ssh-action@master
