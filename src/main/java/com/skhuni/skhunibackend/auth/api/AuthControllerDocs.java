@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 public interface AuthControllerDocs {
 
@@ -28,4 +30,12 @@ public interface AuthControllerDocs {
             @ApiResponse(responseCode = "200", description = "토큰 발급 성공")
     })
     RspTemplate<TokenDto> generateAccessToken(@RequestBody RefreshTokenReqDto refreshTokenReqDto);
+
+    @Operation(summary = "로그아웃", description = "로그아웃합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    })
+    @PostMapping("/logout")
+    RspTemplate<String> logout(@RequestHeader("Authorization") String token);
+
 }
