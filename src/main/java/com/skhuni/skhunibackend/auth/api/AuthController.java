@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,12 @@ public class AuthController implements AuthControllerDocs {
         TokenDto getToken = tokenService.generateAccessToken(refreshTokenReqDto);
 
         return RspTemplate.OK("엑세스 토큰 발급", getToken);
+    }
+
+    @PostMapping("/logout")
+    public RspTemplate<String> logout(@RequestHeader("Authorization") String token) {
+        tokenService.addToBlacklist(token);
+        return RspTemplate.OK("로그아웃 성공");
     }
 
 }

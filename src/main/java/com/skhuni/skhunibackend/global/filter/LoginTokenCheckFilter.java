@@ -46,7 +46,7 @@ public class LoginTokenCheckFilter extends GenericFilterBean {
 
         String token = resolveToken(httpRequest);
 
-        if (token == null || !tokenProvider.validateToken(token)) {
+        if (token == null || !tokenProvider.validateToken(token) || tokenProvider.isBlacklisted(token)) {
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
