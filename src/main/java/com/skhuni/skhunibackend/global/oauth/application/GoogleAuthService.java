@@ -6,11 +6,11 @@ import com.skhuni.skhunibackend.auth.api.dto.response.UserInfo;
 import com.skhuni.skhunibackend.auth.application.AuthService;
 import com.skhuni.skhunibackend.global.oauth.api.dto.response.GoogleTokenResponse;
 import com.skhuni.skhunibackend.global.oauth.exception.OAuthException;
+import com.skhuni.skhunibackend.global.properties.OauthProperties;
 import com.skhuni.skhunibackend.member.domain.SocialType;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,23 +28,14 @@ public class GoogleAuthService implements AuthService {
 
     private static final String JWT_DELIMITER = "\\.";
 
-    @Value("${oauth.google.client-id}")
-    private String googleClientId;
-
-    @Value("${oauth.google.client-secret}")
-    private String googleClientSecret;
-
-    @Value("${oauth.google.redirect-uri}")
-    private String googleRedirectUri;
-
-    @Value("${oauth.google.id-token-url}")
-    private String googleIdTokenUrl;
+    private final OauthProperties oauthProperties;
 
     private final ObjectMapper objectMapper;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public GoogleAuthService(ObjectMapper objectMapper) {
+    public GoogleAuthService(OauthProperties oauthProperties, ObjectMapper objectMapper) {
+        this.oauthProperties = oauthProperties;
         this.objectMapper = objectMapper;
     }
 
@@ -70,7 +61,7 @@ public class GoogleAuthService implements AuthService {
 
         try {
             ResponseEntity<GoogleTokenResponse> responseTokenEntity = restTemplate.postForEntity(
-                    googleIdTokenUrl,
+                    oauthProperties.getGoogle().idTokenUrl(),
                     requestEntity,
                     GoogleTokenResponse.class);
 
@@ -88,9 +79,9 @@ public class GoogleAuthService implements AuthService {
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 
         requestParams.add("code", code);
-        requestParams.add("client_id", googleClientId);
-        requestParams.add("client_secret", googleClientSecret);
-        requestParams.add("redirect_uri", googleRedirectUri);
+        requestParams.add("client_id", oauthProperties.getGoogle().clientId());
+        requestParams.add("client_secret", oauthProperties.getGoogle().clientSecret());
+        requestParams.add("redirect_uri", oauthProperties.getGoogle().redirectUri());
         requestParams.add("grant_type", "authorization_code");
 
         return requestParams;
