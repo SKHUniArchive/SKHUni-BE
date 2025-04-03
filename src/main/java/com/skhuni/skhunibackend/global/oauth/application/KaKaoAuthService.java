@@ -6,12 +6,12 @@ import com.skhuni.skhunibackend.auth.api.dto.response.UserInfo;
 import com.skhuni.skhunibackend.auth.application.AuthService;
 import com.skhuni.skhunibackend.global.oauth.api.dto.response.KakaoTokenResponse;
 import com.skhuni.skhunibackend.global.oauth.exception.OAuthException;
+import com.skhuni.skhunibackend.global.properties.OauthProperties;
 import com.skhuni.skhunibackend.member.domain.SocialType;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -29,20 +29,14 @@ public class KaKaoAuthService implements AuthService {
 
     private static final String JWT_DELIMITER = "\\.";
 
-    @Value("${oauth.kakao.client-id}")
-    private String kakaoClientId;
-
-    @Value("${oauth.kakao.redirect-uri}")
-    private String kakaoRedirectUri;
-
-    @Value("${oauth.kakao.id-token-url}")
-    private String kakaoIdTokenUrl;
+    private final OauthProperties oauthProperties;
 
     private final ObjectMapper objectMapper;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public KaKaoAuthService(ObjectMapper objectMapper) {
+    public KaKaoAuthService(OauthProperties oauthProperties, ObjectMapper objectMapper) {
+        this.oauthProperties = oauthProperties;
         this.objectMapper = objectMapper;
     }
 
@@ -71,7 +65,7 @@ public class KaKaoAuthService implements AuthService {
 
         try {
             ResponseEntity<KakaoTokenResponse> responseTokenEntity = restTemplate.postForEntity(
-                    kakaoIdTokenUrl,
+                    oauthProperties.getKakao().idTokenUrl(),
                     requestEntity,
                     KakaoTokenResponse.class);
 
@@ -89,9 +83,9 @@ public class KaKaoAuthService implements AuthService {
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 
         requestParams.add("code", code);
-        requestParams.add("client_id", kakaoClientId);
+        requestParams.add("client_id", oauthProperties.getKakao().clientId());
         requestParams.add("grant_type", "authorization_code");
-        requestParams.add("redirect_uri", kakaoRedirectUri);
+        requestParams.add("redirect_uri", oauthProperties.getKakao().redirectUri());
 
         return requestParams;
     }
