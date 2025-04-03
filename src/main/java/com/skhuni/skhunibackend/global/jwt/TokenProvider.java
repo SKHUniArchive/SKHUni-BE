@@ -16,15 +16,19 @@ import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class TokenProvider {
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     private final MemberRepository memberRepository;
 
@@ -119,4 +123,17 @@ public class TokenProvider {
 
         return member.getEmail();
     }
+
+    public void addToBlacklist(String token) {
+        redisTemplate.opsForValue()
+                .set(token,
+                        "blacklisted",
+                        Long.parseLong(accessTokenExpireTime),
+                        TimeUnit.SECONDS);
+    }
+
+    public boolean isBlacklisted(String token) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
+    }
+
 }

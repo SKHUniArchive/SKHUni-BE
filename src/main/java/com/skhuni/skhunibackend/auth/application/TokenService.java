@@ -21,7 +21,8 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
 
-    public TokenService(TokenProvider tokenProvider, TokenRepository tokenRepository,
+    public TokenService(TokenProvider tokenProvider,
+                        TokenRepository tokenRepository,
                         MemberRepository memberRepository) {
         this.tokenProvider = tokenProvider;
         this.tokenRepository = tokenRepository;
@@ -64,6 +65,11 @@ public class TokenService {
         Member member = memberRepository.findById(token.getMember().getId()).orElseThrow(MemberNotFoundException::new);
 
         return tokenProvider.generateAccessTokenByRefreshToken(member.getEmail(), token.getRefreshToken());
+    }
+
+    public void addToBlacklist(String token) {
+        String resultToken = token.substring(7);
+        tokenProvider.addToBlacklist(resultToken);
     }
 
 }
