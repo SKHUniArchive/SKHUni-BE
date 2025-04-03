@@ -22,7 +22,13 @@ public class LoginTokenCheckFilter extends GenericFilterBean {
     private final List<String> excludeUrls = Arrays.asList(
             "/api/kakao/token",
             "/api/google/token",
-            "/api/token/access"
+            "/api/token/access",
+            "/swagger-ui/index.html",
+            "/swagger-ui/swagger-initializer.js",
+            "/swagger-ui/**",
+            "/v3/api-docs",
+            "/v3/api-docs/swagger-config",
+            "/v3/api-docs/**"
     );
 
     @Override

@@ -14,7 +14,6 @@ import com.skhuni.skhunibackend.member.domain.SocialType;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,14 +41,14 @@ public class AuthController implements AuthControllerDocs {
                 SocialType.valueOf(provider.toUpperCase()));
         TokenDto getToken = tokenService.getToken(getMemberDto);
 
-        return new RspTemplate<>(HttpStatus.OK, "토큰 발급", getToken);
+        return RspTemplate.OK("토큰 발급", getToken);
     }
 
     @PostMapping("/token/access")
     public RspTemplate<TokenDto> generateAccessToken(@RequestBody RefreshTokenReqDto refreshTokenReqDto) {
         TokenDto getToken = tokenService.generateAccessToken(refreshTokenReqDto);
 
-        return new RspTemplate<>(HttpStatus.OK, "액세스 토큰 발급", getToken);
+        return RspTemplate.OK("엑세스 토큰 발급", getToken);
     }
 
 }
