@@ -112,16 +112,14 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String getMemberEmail(String token) {
+    public Member getMember(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow(MemberNotFoundException::new);
-
-        return member.getEmail();
+        return memberRepository.findByEmail(claims.getSubject()).orElseThrow(MemberNotFoundException::new);
     }
 
     public void addToBlacklist(String token) {

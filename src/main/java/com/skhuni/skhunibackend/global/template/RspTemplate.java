@@ -40,6 +40,10 @@ public class RspTemplate<T> {
         return new RspTemplate<>(HttpStatus.OK, data);
     }
 
+    public static <T> RspTemplate<T> OK(String message) {
+        return new RspTemplate<>(HttpStatus.OK, message);
+    }
+
     public static <T> RspTemplate<T> OK(String message, T data) {
         return new RspTemplate<>(HttpStatus.OK, message, data);
     }

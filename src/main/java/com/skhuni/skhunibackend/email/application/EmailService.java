@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 
 public interface EmailService {
 
+    void verifyAuthCode(String email, String inputCode);
+
     void sendEmail(String email) throws UnsupportedEncodingException, MessagingException;
 
 }
