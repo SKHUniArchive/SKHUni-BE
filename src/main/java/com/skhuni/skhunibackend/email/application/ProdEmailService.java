@@ -1,10 +1,14 @@
 package com.skhuni.skhunibackend.email.application;
 
+import com.skhuni.skhunibackend.email.exception.InvalidCodeException;
 import com.skhuni.skhunibackend.email.exception.InvalidEmailAddressException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,30 +20,42 @@ public class ProdEmailService implements EmailService {
 
     private static final String EMAIL_FORMAT = "^[a-zA-Z0-9._%+-]+@office\\.skhu\\.ac\\.kr$";
 
+    @Value("${spring.mail.code.expire.time}")
+    private String authCodeExpireTime;
+
+    private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender emailSender;
-    private String authNum;
+    private String authCode;
 
-    // TODO(): 이메일 인증은 redis에 저장된 인증번호를 가져와서 인증하는 메소드.
+    @Override
+    public void verifyAuthCode(String email, String inputCode) {
+        String storedCode = redisTemplate.opsForValue().get("email: " + email);
 
+        validateAuthCode(storedCode, inputCode);
 
-    // TODO(): 이메일 인증 번호 redis에 저장하는 코드 추가
+        redisTemplate.delete("email: " + email);
+    }
+
+    private void validateAuthCode(String storedCode, String inputCode) {
+        if (storedCode == null) {
+            throw new InvalidCodeException("인증번호가 만료되었거나 존재하지 않습니다.");
+        }
+
+        if (!storedCode.equals(inputCode)) {
+            throw new InvalidCodeException("잘못된 인증번호입니다.");
+        }
+    }
+
     @Override
     public void sendEmail(String email) throws MessagingException {
         MimeMessage emailForm = createEmailForm(email);
+
+        redisTemplate.opsForValue()
+                .set("email: " + email,
+                        authCode,
+                        Long.parseLong(authCodeExpireTime),
+                        TimeUnit.SECONDS);
         emailSender.send(emailForm);
-    }
-
-    private void createCode() {
-        SecureRandom random = new SecureRandom();
-        char[] key = new char[6];
-        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        int length = characters.length();
-
-        for (int i = 0; i < 6; i++) {
-            key[i] = characters.charAt(random.nextInt(length));
-        }
-
-        authNum = new String(key);
     }
 
     private MimeMessage createEmailForm(String email) throws MessagingException {
@@ -61,6 +77,19 @@ public class ProdEmailService implements EmailService {
         return message;
     }
 
+    private void createCode() {
+        SecureRandom random = new SecureRandom();
+        char[] key = new char[6];
+        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int length = characters.length();
+
+        for (int i = 0; i < 6; i++) {
+            key[i] = characters.charAt(random.nextInt(length));
+        }
+
+        authCode = new String(key);
+    }
+
     private void validateEmail(String email) {
         if (!email.matches(EMAIL_FORMAT)) {
             throw new InvalidEmailAddressException();
@@ -76,7 +105,7 @@ public class ProdEmailService implements EmailService {
                 "<div align='center' style='border:1px solid black; font-family:verdana';>" +
                 "<div style='font-size:130%'>" +
                 "<strong><br>" +
-                authNum +
+                authCode +
                 "</strong><div><br/> " +
                 "</div>";
     }

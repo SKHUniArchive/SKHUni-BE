@@ -18,6 +18,9 @@ spring:
     port: ${spring.mail.port}
     username: ${spring.mail.username}
     password: ${spring.mail.password}
+    code:
+      expire:
+        time: ${spring.mail.expire.time}
     properties:
       mail:
         smtp:
