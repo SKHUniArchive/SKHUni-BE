@@ -37,6 +37,13 @@ jobs:
           echo "${{ secrets.YML_PROD }}" > ./application-prod.yml
         shell: bash
 
+      - name: make gcs.json
+        run: |
+          cd ./src/main/resources
+          touch ./gcs.json
+          echo "${{ secrets.JSON_GCS }}" > ./gcs.json
+        shell: bash
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
