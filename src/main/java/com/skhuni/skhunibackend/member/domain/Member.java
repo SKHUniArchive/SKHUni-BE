@@ -47,4 +47,8 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
     
+    public void updateStudentRole() {
+        this.role = Role.ROLE_STUDENT;
+    }
+
 }
