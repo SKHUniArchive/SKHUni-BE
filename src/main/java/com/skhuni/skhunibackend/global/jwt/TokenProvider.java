@@ -1,9 +1,7 @@
 package com.skhuni.skhunibackend.global.jwt;
 
 import com.skhuni.skhunibackend.global.jwt.api.dto.TokenDto;
-import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
-import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -112,14 +110,14 @@ public class TokenProvider {
                 .compact();
     }
 
-    public Member getMember(String token) {
+    public String getMemberEmail(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        return memberRepository.findByEmail(claims.getSubject()).orElseThrow(MemberNotFoundException::new);
+        return claims.getSubject();
     }
 
     public void addToBlacklist(String token) {

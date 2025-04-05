@@ -30,10 +30,10 @@ public class AuthenticatedEmailArgumentResolver implements HandlerMethodArgument
 
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
-            return tokenProvider.getMember(token).getEmail();
+            return tokenProvider.getMemberEmail(token);
         }
 
         return null;
     }
-    
+
 }
