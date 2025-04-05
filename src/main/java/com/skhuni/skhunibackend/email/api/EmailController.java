@@ -3,6 +3,7 @@ package com.skhuni.skhunibackend.email.api;
 import com.skhuni.skhunibackend.email.api.request.EmailAuthCodeCheckReqDto;
 import com.skhuni.skhunibackend.email.api.request.EmailCheckReqDto;
 import com.skhuni.skhunibackend.email.application.EmailService;
+import com.skhuni.skhunibackend.global.annotation.AuthenticatedEmail;
 import com.skhuni.skhunibackend.global.template.RspTemplate;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -27,8 +28,9 @@ public class EmailController implements EmailControllerDocs {
     }
 
     @PostMapping("/email/check")
-    public RspTemplate<Void> verifyAuthCode(@RequestBody EmailAuthCodeCheckReqDto emailAuthCodeCheckReqDto) {
-        emailService.verifyAuthCode(emailAuthCodeCheckReqDto.email(), emailAuthCodeCheckReqDto.authCode());
+    public RspTemplate<Void> verifyAuthCode(@AuthenticatedEmail String email,
+                                            @RequestBody EmailAuthCodeCheckReqDto emailAuthCodeCheckReqDto) {
+        emailService.verifyAuthCode(email, emailAuthCodeCheckReqDto.email(), emailAuthCodeCheckReqDto.authCode());
         return RspTemplate.OK("이메일 인증 성공");
     }
 

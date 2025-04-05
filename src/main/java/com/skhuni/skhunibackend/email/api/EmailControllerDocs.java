@@ -2,6 +2,7 @@ package com.skhuni.skhunibackend.email.api;
 
 import com.skhuni.skhunibackend.email.api.request.EmailAuthCodeCheckReqDto;
 import com.skhuni.skhunibackend.email.api.request.EmailCheckReqDto;
+import com.skhuni.skhunibackend.global.annotation.AuthenticatedEmail;
 import com.skhuni.skhunibackend.global.template.RspTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +26,7 @@ public interface EmailControllerDocs {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    RspTemplate<Void> verifyAuthCode(@RequestBody EmailAuthCodeCheckReqDto emailAuthCodeCheckReqDto);
+    RspTemplate<Void> verifyAuthCode(@AuthenticatedEmail String email,
+                                     @RequestBody EmailAuthCodeCheckReqDto emailAuthCodeCheckReqDto);
 
 }

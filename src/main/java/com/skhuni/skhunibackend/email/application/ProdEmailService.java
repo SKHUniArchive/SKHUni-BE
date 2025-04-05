@@ -2,6 +2,9 @@ package com.skhuni.skhunibackend.email.application;
 
 import com.skhuni.skhunibackend.email.exception.InvalidCodeException;
 import com.skhuni.skhunibackend.email.exception.InvalidEmailAddressException;
+import com.skhuni.skhunibackend.member.domain.Member;
+import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
+import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.security.SecureRandom;
@@ -23,17 +26,22 @@ public class ProdEmailService implements EmailService {
     @Value("${spring.mail.code.expire.time}")
     private String authCodeExpireTime;
 
+    private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender emailSender;
     private String authCode;
 
+    @Transactional
     @Override
-    public void verifyAuthCode(String email, String inputCode) {
-        String storedCode = redisTemplate.opsForValue().get("email: " + email);
+    public void verifyAuthCode(String email, String authEmail, String inputCode) {
+        String storedCode = redisTemplate.opsForValue().get("email: " + authEmail);
 
         validateAuthCode(storedCode, inputCode);
 
-        redisTemplate.delete("email: " + email);
+        redisTemplate.delete("email: " + authEmail);
+
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        member.updateStudentRole();
     }
 
     private void validateAuthCode(String storedCode, String inputCode) {
@@ -97,17 +105,21 @@ public class ProdEmailService implements EmailService {
     }
 
     private String mailContents() {
-        return "<div style='margin:20px;'>" +
-                "<h1> 👋🏻 SKHUni 재학생 인증 메일 </h1><br>" +
-                "<p>SKHUni는 성공회대학교 이메일로 인증해야만 사용할 수 있는 서비스로, </p>" +
-                "<p>성공회대 office 365 메일로 재학생 인증 후 사용하실 수 있습니다. </p><br>" +
-                "<p>아래의 코드를 인증 코드란에 적고 재학생 인증을 마쳐주세요.<p><br>" +
-                "<div align='center' style='border:1px solid black; font-family:verdana';>" +
-                "<div style='font-size:130%'>" +
-                "<strong><br>" +
-                authCode +
-                "</strong><div><br/> " +
-                "</div>";
+        return """
+                <div style='margin:20px;'>
+                    <h1> 👋🏻 SKHUni 재학생 인증 메일 </h1><br>
+                    <p>SKHUni는 성공회대학교 이메일로 인증해야만 사용할 수 있는 서비스로, </p>
+                    <p>성공회대 office 365 메일로 재학생 인증 후 사용하실 수 있습니다. </p><br>
+                    <p>아래의 코드를 인증 코드란에 적고 재학생 인증을 마쳐주세요.<p><br>
+                    <div align='center' style='border:1px solid black; font-family:verdana';>
+                        <div style='font-size:130%; text-align:center; margin:20px; padding:20px;'>
+                            <strong style='font-size:150%;'>
+                """ + authCode + """
+                            </strong><br>
+                        </div>
+                    </div>
+                </div>
+                """;
     }
 
 }
