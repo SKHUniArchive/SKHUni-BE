@@ -4,8 +4,10 @@ import com.skhuni.skhunibackend.auth.api.dto.response.MemberLoginResDto;
 import com.skhuni.skhunibackend.auth.api.dto.response.UserInfo;
 import com.skhuni.skhunibackend.auth.exception.ExistsMemberEmailException;
 import com.skhuni.skhunibackend.member.domain.Member;
+import com.skhuni.skhunibackend.member.domain.MemberLink;
 import com.skhuni.skhunibackend.member.domain.Role;
 import com.skhuni.skhunibackend.member.domain.SocialType;
+import com.skhuni.skhunibackend.member.domain.repository.MemberLinkRepository;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthMemberService {
     private final MemberRepository memberRepository;
+    private final MemberLinkRepository memberLinkRepository;
 
-    public AuthMemberService(MemberRepository memberRepository) {
+    public AuthMemberService(MemberRepository memberRepository, MemberLinkRepository memberLinkRepository) {
         this.memberRepository = memberRepository;
+        this.memberLinkRepository = memberLinkRepository;
     }
 
     @Transactional
@@ -35,17 +39,23 @@ public class AuthMemberService {
 
     private Member createMember(UserInfo userInfo, SocialType provider) {
         String userPicture = getUserPicture(userInfo.picture());
+        String name = userInfo.nickname() != null ? userInfo.nickname() : userInfo.name();
 
-        return memberRepository.save(
+        Member member = memberRepository.save(
                 Member.builder()
                         .email(userInfo.email())
-                        .name(userInfo.name())
-                        .nickname(userInfo.nickname())
+                        .name(name)
                         .picture(userPicture)
                         .socialType(provider)
                         .role(Role.ROLE_USER)
                         .build()
         );
+        memberLinkRepository.save(
+                MemberLink.builder()
+                        .member(member)
+                        .build()
+        );
+        return member;
     }
 
     private String getUserPicture(String picture) {
