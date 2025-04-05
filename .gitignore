@@ -28,6 +28,7 @@ out/
 
 src/**/application-prod.yml
 src/**/application-dev.yml
+src/**/gcs.json
 
 ### NetBeans ###
 /nbproject/private/

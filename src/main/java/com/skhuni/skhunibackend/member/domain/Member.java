@@ -46,9 +46,13 @@ public class Member extends BaseEntity {
         this.socialType = socialType;
         this.nickname = nickname;
     }
-    
+
     public void updateStudentRole() {
         this.role = Role.ROLE_STUDENT;
+    }
+
+    public void updatePicture(String picture) {
+        this.picture = picture;
     }
 
 }
