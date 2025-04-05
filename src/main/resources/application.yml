@@ -28,6 +28,14 @@ spring:
             enable: true
           auth: true
 
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ${spring.cloud.gcp.storage.credentials.location}
+        project-id: ${spring.cloud.gcp.storage.project-id}
+        bucket: ${spring.cloud.gcp.storage.bucket}
+
   jpa:
     hibernate:
       ddl-auto: update
