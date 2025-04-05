@@ -10,19 +10,17 @@ import com.skhuni.skhunibackend.member.domain.SocialType;
 import com.skhuni.skhunibackend.member.domain.repository.MemberLinkRepository;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthMemberService {
+
     private final MemberRepository memberRepository;
     private final MemberLinkRepository memberLinkRepository;
-
-    public AuthMemberService(MemberRepository memberRepository, MemberLinkRepository memberLinkRepository) {
-        this.memberRepository = memberRepository;
-        this.memberLinkRepository = memberLinkRepository;
-    }
 
     @Transactional
     public MemberLoginResDto saveUserInfo(UserInfo userInfo, SocialType provider) {

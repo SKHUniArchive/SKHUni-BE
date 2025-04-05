@@ -11,7 +11,7 @@ public record PageInfoResDto(
 ) {
     public static <T> PageInfoResDto from(Page<T> entityPage) {
         return PageInfoResDto.builder()
-                .currentPage(entityPage.getNumber())
+                .currentPage(entityPage.getNumber() + 1)
                 .totalPages(entityPage.getTotalPages())
                 .totalItems(entityPage.getTotalElements())
                 .build();
