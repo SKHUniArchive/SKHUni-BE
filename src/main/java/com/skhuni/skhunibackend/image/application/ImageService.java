@@ -34,12 +34,31 @@ public class ImageService {
     private final MemberRepository memberRepository;
 
     @Transactional
+    public String imageUpload(String email, MultipartFile multipartFile) throws IOException {
+        String uuid = getUuid();
+        Storage storage = getStorage();
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+
+        String filePath = "member/images/" + member.getId() + "/" + uuid;
+        String imgUrl = getImgUrl(filePath);
+
+        storageSave(multipartFile, filePath, storage);
+        Image image = Image.builder()
+                .convertImageUrl(imgUrl)
+                .member(member)
+                .build();
+        imageRepository.save(image);
+        
+        return image.getConvertImageUrl();
+    }
+
+    @Transactional
     public void memberProfileImageUpload(String email, MultipartFile multipartFile) throws IOException {
         String uuid = getUuid();
         Storage storage = getStorage();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
-        String filePath = "member/" + member.getId() + "/" + uuid;
+        String filePath = "member/profile/" + member.getId() + "/" + uuid;
         String imgUrl = getImgUrl(filePath);
 
         if (multipartFile != null) {

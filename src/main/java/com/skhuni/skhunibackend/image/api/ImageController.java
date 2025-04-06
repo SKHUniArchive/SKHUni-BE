@@ -18,7 +18,14 @@ public class ImageController implements ImageControllerDocs {
 
     private final ImageService imageService;
 
-    @PostMapping(value = "/profile/upload")
+    @PostMapping("/upload")
+    public RspTemplate<String> imageUpload(@AuthenticatedEmail String email,
+                                           @RequestPart("multipartFile") MultipartFile multipartFile)
+            throws IOException {
+        return RspTemplate.OK(imageService.imageUpload(email, multipartFile));
+    }
+
+    @PostMapping("/profile/upload")
     public RspTemplate<Void> imageProfileUpload(@AuthenticatedEmail String email,
                                                 @RequestPart("multipartFile") MultipartFile multipartFile)
             throws IOException {
