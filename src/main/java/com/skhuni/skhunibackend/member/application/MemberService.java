@@ -58,6 +58,14 @@ public class MemberService {
         return MemberInfoResDto.of(member, memberLink);
     }
 
+    public MemberInfoResDto getMemberInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        MemberLink memberLink = memberLinkRepository.findByMemberId(member.getId())
+                .orElseThrow(MemberNotFoundException::new);
+
+        return MemberInfoResDto.of(member, memberLink);
+    }
+
     @Transactional
     public void updateInfo(String email, MemberInfoUpdateReqDto memberInfoUpdateReqDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
