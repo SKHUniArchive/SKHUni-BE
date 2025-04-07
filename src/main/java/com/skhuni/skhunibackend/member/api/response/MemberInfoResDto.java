@@ -8,6 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record MemberInfoResDto(
+        Long memberId,
         String email,
         String name,
         String picture,
@@ -28,6 +29,7 @@ public record MemberInfoResDto(
 ) {
     public static MemberInfoResDto of(Member member, MemberLink memberLink) {
         return MemberInfoResDto.builder()
+                .memberId(member.getId())
                 .email(member.getEmail())
                 .name(member.getName())
                 .picture(member.getPicture())

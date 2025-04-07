@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,6 +38,14 @@ public interface MemberControllerDocs {
             @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
     })
     RspTemplate<MemberInfoResDto> getInfo(@AuthenticatedEmail String email);
+
+
+    @Operation(summary = "특정 사용자 정보 조회", description = "특정 사용자 정보를 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
+    })
+    RspTemplate<MemberInfoResDto> getMemberInfo(@PathVariable Long memberId);
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 정보를 수정합니다")
     @ApiResponses(value = {

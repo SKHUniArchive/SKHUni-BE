@@ -10,6 +10,7 @@ import com.skhuni.skhunibackend.member.domain.EnrollmentStatus;
 import com.skhuni.skhunibackend.member.domain.FieldType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,12 @@ public class MemberController implements MemberControllerDocs {
     @GetMapping("/me")
     public RspTemplate<MemberInfoResDto> getInfo(@AuthenticatedEmail String email) {
         MemberInfoResDto info = memberService.getInfo(email);
+        return RspTemplate.OK(info);
+    }
+
+    @GetMapping("/{memberId}")
+    public RspTemplate<MemberInfoResDto> getMemberInfo(@PathVariable Long memberId) {
+        MemberInfoResDto info = memberService.getMemberInfo(memberId);
         return RspTemplate.OK(info);
     }
 
