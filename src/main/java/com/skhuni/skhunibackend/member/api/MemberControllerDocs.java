@@ -2,6 +2,8 @@ package com.skhuni.skhunibackend.member.api;
 
 import com.skhuni.skhunibackend.global.annotation.AuthenticatedEmail;
 import com.skhuni.skhunibackend.global.template.RspTemplate;
+import com.skhuni.skhunibackend.member.api.request.CodeReviewReqDto;
+import com.skhuni.skhunibackend.member.api.request.CoffeeChatReqDto;
 import com.skhuni.skhunibackend.member.api.request.MemberInfoUpdateReqDto;
 import com.skhuni.skhunibackend.member.api.response.MemberInfoResDto;
 import com.skhuni.skhunibackend.member.api.response.MembersResDto;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,5 +64,23 @@ public interface MemberControllerDocs {
     })
     RspTemplate<Void> updateInfo(@AuthenticatedEmail String email,
                                  @RequestBody MemberInfoUpdateReqDto memberInfoUpdateReqDto);
+
+    @Operation(summary = "커피챗 요청", description = "커피챗을 요청합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공"),
+            @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
+    })
+    RspTemplate<Void> requestCoffeeChat(@AuthenticatedEmail String email,
+                                        @RequestBody CoffeeChatReqDto coffeeChatReqDto)
+            throws MessagingException;
+
+    @Operation(summary = "코드리뷰 요청", description = "코드리뷰를 요청합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "요청 성공"),
+            @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
+    })
+    RspTemplate<Void> requestCodeReview(@AuthenticatedEmail String email,
+                                        @RequestBody CodeReviewReqDto codeReviewReqDto)
+            throws MessagingException;
 
 }
