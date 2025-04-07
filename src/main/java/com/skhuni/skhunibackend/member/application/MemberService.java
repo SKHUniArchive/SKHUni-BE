@@ -25,6 +25,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberLinkRepository memberLinkRepository;
 
+    public String getMemberRole(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return member.getRole().name();
+    }
+
     public MembersResDto getMembers(String email, String name, FieldType field,
                                     EnrollmentStatus enrollmentStatus, boolean coffeeChat,
                                     boolean codeReview, int page, int size) {

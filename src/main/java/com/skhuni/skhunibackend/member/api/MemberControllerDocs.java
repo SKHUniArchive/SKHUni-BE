@@ -17,6 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface MemberControllerDocs {
 
+    @Operation(summary = "사용자 권한 조회", description = "사용자 권한을 조회합니다. ROLE_USER(로그인 O + 이메일인증 X), ROLE_STUDENT(로그인 O + 이메일인증 O) 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
+    })
+    RspTemplate<String> getMemberRole(@AuthenticatedEmail String email);
+
     @Operation(summary = "사용자 리스트 조회", description = "사용자 리스트를 조회합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),

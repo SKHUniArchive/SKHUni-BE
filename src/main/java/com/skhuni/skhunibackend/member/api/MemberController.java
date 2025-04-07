@@ -23,6 +23,12 @@ public class MemberController implements MemberControllerDocs {
 
     private final MemberService memberService;
 
+    @GetMapping("/role")
+    public RspTemplate<String> getMemberRole(@AuthenticatedEmail String email) {
+        String role = memberService.getMemberRole(email);
+        return RspTemplate.OK("사용자 권한 반환", role);
+    }
+
     @GetMapping
     public RspTemplate<MembersResDto> getMembers(@AuthenticatedEmail String email,
                                                  @RequestParam(required = false) String name,
