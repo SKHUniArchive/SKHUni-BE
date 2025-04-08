@@ -9,9 +9,6 @@ import com.skhuni.skhunibackend.image.domain.repository.ImageRepository;
 import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
-import com.skhuni.skhunibackend.project.domain.Project;
-import com.skhuni.skhunibackend.project.domain.repository.ProjectRepository;
-import com.skhuni.skhunibackend.project.exception.ProjectNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -35,7 +32,6 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
-    private final ProjectRepository projectRepository;
 
     @Transactional
     public String imageUpload(String email, MultipartFile multipartFile) throws IOException {
@@ -78,26 +74,22 @@ public class ImageService {
     }
 
     @Transactional
-    public void projectImageUpload(String email, Long projectId, MultipartFile multipartFile) throws IOException {
+    public String projectImageUpload(String email, MultipartFile multipartFile) throws IOException {
         String uuid = getUuid();
         Storage storage = getStorage();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
-        String filePath = "project/" + member.getId() + "/" + projectId + "/" + uuid;
+        String filePath = "project/" + member.getId() + "/" + uuid;
         String imgUrl = getImgUrl(filePath);
 
-        if (multipartFile != null) {
-            Project project = projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
-            storageSave(multipartFile, filePath, storage);
-            Image image = Image.builder()
-                    .convertImageUrl(imgUrl)
-                    .member(member)
-                    .project(project)
-                    .build();
+        storageSave(multipartFile, filePath, storage);
+        Image image = Image.builder()
+                .convertImageUrl(imgUrl)
+                .member(member)
+                .build();
 
-            imageRepository.save(image);
-            project.updatePicture(image.getConvertImageUrl());
-        }
+        imageRepository.save(image);
+        return image.getConvertImageUrl();
     }
 
     private static String getUuid() {

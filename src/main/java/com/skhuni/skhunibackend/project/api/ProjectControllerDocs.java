@@ -33,7 +33,6 @@ public interface ProjectControllerDocs {
             @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
     })
     RspTemplate<String> projectImageUpload(@AuthenticatedEmail String email,
-                                           @PathVariable Long projectId,
                                            @RequestPart("multipartFile") MultipartFile multipartFile)
             throws IOException;
 
