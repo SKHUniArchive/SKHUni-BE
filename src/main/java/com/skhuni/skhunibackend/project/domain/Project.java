@@ -47,10 +47,10 @@ public class Project extends BaseEntity {
     private Member member;
 
     @Builder
-    private Project(String title, String picture, String introLine, String introduction, String githubLink1,
+    private Project(String title, String introLine, String introduction, String githubLink1,
                     String githubLink2, String siteLink, Member member) {
         this.title = title;
-        this.picture = picture;
+        this.picture = "https://storage.googleapis.com/image-gcs/default/%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%AE.png";
         this.introLine = introLine;
         this.introduction = introduction;
         this.githubLink1 = githubLink1;
@@ -59,14 +59,10 @@ public class Project extends BaseEntity {
         this.member = member;
     }
 
-    public void update(String title, String picture, String introLine, String introduction, String githubLink1,
+    public void update(String title, String introLine, String introduction, String githubLink1,
                        String githubLink2, String siteLink) {
         if (!Objects.equals(this.title, title)) {
             this.title = title;
-        }
-
-        if (!Objects.equals(this.picture, picture)) {
-            this.picture = picture;
         }
 
         if (!Objects.equals(this.introLine, introLine)) {
@@ -88,6 +84,10 @@ public class Project extends BaseEntity {
         if (!Objects.equals(this.siteLink, siteLink)) {
             this.siteLink = siteLink;
         }
+    }
+
+    public void updatePicture(String picture) {
+        this.picture = picture;
     }
 
 }
