@@ -2,6 +2,7 @@ package com.skhuni.skhunibackend.image.domain;
 
 import com.skhuni.skhunibackend.global.entity.BaseEntity;
 import com.skhuni.skhunibackend.member.domain.Member;
+import com.skhuni.skhunibackend.project.domain.Project;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +31,15 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     @Builder
-    private Image(String convertImageUrl, Member member) {
+    private Image(String convertImageUrl, Member member, Project project) {
         this.convertImageUrl = convertImageUrl;
         this.member = member;
+        this.project = project;
     }
-    
+
 }

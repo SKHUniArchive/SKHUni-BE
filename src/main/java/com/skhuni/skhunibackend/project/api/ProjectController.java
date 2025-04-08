@@ -2,10 +2,12 @@ package com.skhuni.skhunibackend.project.api;
 
 import com.skhuni.skhunibackend.global.annotation.AuthenticatedEmail;
 import com.skhuni.skhunibackend.global.template.RspTemplate;
+import com.skhuni.skhunibackend.image.application.ImageService;
 import com.skhuni.skhunibackend.project.api.request.ProjectSaveReqDto;
 import com.skhuni.skhunibackend.project.api.response.ProjectInfoResDto;
 import com.skhuni.skhunibackend.project.api.response.ProjectsResDto;
 import com.skhuni.skhunibackend.project.application.ProjectService;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,12 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectController implements ProjectControllerDocs {
 
     private final ProjectService projectService;
+    private final ImageService imageService;
 
     @PostMapping("/save")
     public RspTemplate<Void> saveProject(@AuthenticatedEmail String email,
                                          @RequestBody ProjectSaveReqDto projectSaveReqDto) {
         projectService.saveProject(email, projectSaveReqDto);
         return RspTemplate.CREATED();
+    }
+
+    @PostMapping("/{projectId}/image/upload")
+    public RspTemplate<String> projectImageUpload(@AuthenticatedEmail String email,
+                                                  @PathVariable Long projectId,
+                                                  @RequestPart("multipartFile") MultipartFile multipartFile)
+            throws IOException {
+        imageService.projectImageUpload(email, projectId, multipartFile);
+        return RspTemplate.OK();
     }
 
     @PostMapping("/{projectId}")
