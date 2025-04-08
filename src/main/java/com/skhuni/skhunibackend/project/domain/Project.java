@@ -47,10 +47,10 @@ public class Project extends BaseEntity {
     private Member member;
 
     @Builder
-    private Project(String title, String introLine, String introduction, String githubLink1,
+    private Project(String title, String picture, String introLine, String introduction, String githubLink1,
                     String githubLink2, String siteLink, Member member) {
         this.title = title;
-        this.picture = "https://storage.googleapis.com/image-gcs/default/%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%AE.png";
+        this.picture = picture;
         this.introLine = introLine;
         this.introduction = introduction;
         this.githubLink1 = githubLink1;
