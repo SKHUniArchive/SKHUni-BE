@@ -59,10 +59,14 @@ public class Project extends BaseEntity {
         this.member = member;
     }
 
-    public void update(String title, String introLine, String introduction, String githubLink1,
+    public void update(String title, String picture, String introLine, String introduction, String githubLink1,
                        String githubLink2, String siteLink) {
         if (!Objects.equals(this.title, title)) {
             this.title = title;
+        }
+
+        if (!Objects.equals(this.picture, picture)) {
+            this.picture = picture;
         }
 
         if (!Objects.equals(this.introLine, introLine)) {
@@ -84,10 +88,6 @@ public class Project extends BaseEntity {
         if (!Objects.equals(this.siteLink, siteLink)) {
             this.siteLink = siteLink;
         }
-    }
-
-    public void updatePicture(String picture) {
-        this.picture = picture;
     }
 
 }
