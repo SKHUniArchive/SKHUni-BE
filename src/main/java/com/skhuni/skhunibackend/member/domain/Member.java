@@ -1,6 +1,8 @@
 package com.skhuni.skhunibackend.member.domain;
 
 import com.skhuni.skhunibackend.global.entity.BaseEntity;
+import com.skhuni.skhunibackend.project.domain.Project;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -57,6 +62,9 @@ public class Member extends BaseEntity {
     private boolean isCoffeeChatOpen;
 
     private boolean isCodeReviewOpen;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects = new ArrayList<>();
 
     @Builder
     private Member(Role role, String email, String name, String picture, SocialType socialType) {

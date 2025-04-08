@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 @Slf4j
@@ -19,6 +20,7 @@ import org.springframework.web.filter.GenericFilterBean;
 public class LoginTokenCheckFilter extends GenericFilterBean {
 
     private final TokenProvider tokenProvider;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private final List<String> excludeUrls = Arrays.asList(
             "/api/kakao/token",
             "/api/google/token",
@@ -34,7 +36,11 @@ public class LoginTokenCheckFilter extends GenericFilterBean {
             "/swagger-ui/**",
             "/v3/api-docs/swagger-config",
             "/v3/api-docs",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/api/members", // 전체 사용자 리스트
+            "/api/members/{memberId}", // 특정 사용자 정보
+            "/api/projects/{projectId}", // 특정 프로젝트 정보
+            "/api/projects/all-projects" // 전체 프로젝트 리스트
     );
 
     @Override
@@ -45,7 +51,7 @@ public class LoginTokenCheckFilter extends GenericFilterBean {
 
         String path = httpRequest.getRequestURI();
 
-        if (excludeUrls.contains(path) || isPreflightRequest(httpRequest)) {
+        if (isExcludedPath(path) || isPreflightRequest(httpRequest)) {
             chain.doFilter(request, response);
             return;
         }
@@ -58,6 +64,10 @@ public class LoginTokenCheckFilter extends GenericFilterBean {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isExcludedPath(String path) {
+        return excludeUrls.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
     }
 
     private boolean isPreflightRequest(HttpServletRequest request) {

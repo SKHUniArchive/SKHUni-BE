@@ -47,7 +47,7 @@ public class MemberService {
                 })
                 .toList();
 
-        return MembersResDto.from(memberInfoResDtos, PageInfoResDto.from(members));
+        return MembersResDto.of(memberInfoResDtos, PageInfoResDto.from(members));
     }
 
     public MemberInfoResDto getInfo(String email) {

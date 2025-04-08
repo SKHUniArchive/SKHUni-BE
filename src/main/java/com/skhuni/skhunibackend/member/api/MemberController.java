@@ -6,11 +6,14 @@ import com.skhuni.skhunibackend.global.template.RspTemplate;
 import com.skhuni.skhunibackend.member.api.request.CodeReviewReqDto;
 import com.skhuni.skhunibackend.member.api.request.CoffeeChatReqDto;
 import com.skhuni.skhunibackend.member.api.request.MemberInfoUpdateReqDto;
+import com.skhuni.skhunibackend.member.api.response.MemberDetailInfoResDto;
 import com.skhuni.skhunibackend.member.api.response.MemberInfoResDto;
 import com.skhuni.skhunibackend.member.api.response.MembersResDto;
 import com.skhuni.skhunibackend.member.application.MemberService;
 import com.skhuni.skhunibackend.member.domain.EnrollmentStatus;
 import com.skhuni.skhunibackend.member.domain.FieldType;
+import com.skhuni.skhunibackend.project.api.response.ProjectsResDto;
+import com.skhuni.skhunibackend.project.application.ProjectService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController implements MemberControllerDocs {
 
     private final MemberService memberService;
+    private final ProjectService projectService;
     private final EmailRequestService emailRequestService;
 
     @GetMapping("/role")
@@ -56,9 +60,13 @@ public class MemberController implements MemberControllerDocs {
     }
 
     @GetMapping("/{memberId}")
-    public RspTemplate<MemberInfoResDto> getMemberInfo(@PathVariable Long memberId) {
+    public RspTemplate<MemberDetailInfoResDto> getMemberInfo(@PathVariable Long memberId,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
         MemberInfoResDto info = memberService.getMemberInfo(memberId);
-        return RspTemplate.OK(info);
+        ProjectsResDto projects = projectService.getMemberProjects(memberId, page, size);
+        MemberDetailInfoResDto memberDetailInfoResDto = MemberDetailInfoResDto.of(info, projects);
+        return RspTemplate.OK(memberDetailInfoResDto);
     }
 
     @PostMapping

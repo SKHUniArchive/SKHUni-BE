@@ -49,4 +49,5 @@ public record MemberInfoResDto(
                 .etc2(memberLink.getEtc2())
                 .build();
     }
+
 }

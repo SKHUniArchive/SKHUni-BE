@@ -48,4 +48,8 @@ public class RspTemplate<T> {
         return new RspTemplate<>(HttpStatus.OK, message, data);
     }
 
+    public static <T> RspTemplate<T> CREATED() {
+        return new RspTemplate<>(HttpStatus.CREATED);
+    }
+
 }
