@@ -28,7 +28,9 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     public Page<Member> searchMembers(String email, String name, FieldType field, EnrollmentStatus enrollmentStatus,
                                       boolean coffeeChat, boolean codeReview, int page, int size) {
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(member.email.ne(email));
+        if (email != null && !email.isBlank()) {
+            builder.and(member.email.ne(email));
+        }
 
         if (name != null && !name.isBlank()) {
             builder.and(member.name.containsIgnoreCase(name));
@@ -59,10 +61,11 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 .fetch();
 
         long total = queryFactory
-                .select(member.count())
+                .select(member)
                 .from(member)
                 .where(builder)
-                .fetchOne();
+                .stream()
+                .count();
 
         return new PageImpl<>(content, PageRequest.of(page - 1, size), total);
     }
