@@ -35,13 +35,12 @@ public class ProjectController implements ProjectControllerDocs {
         return RspTemplate.CREATED();
     }
 
-    @PostMapping("/{projectId}/image/upload")
+    @PostMapping("/image/upload")
     public RspTemplate<String> projectImageUpload(@AuthenticatedEmail String email,
-                                                  @PathVariable Long projectId,
                                                   @RequestPart("multipartFile") MultipartFile multipartFile)
             throws IOException {
-        imageService.projectImageUpload(email, projectId, multipartFile);
-        return RspTemplate.OK();
+        String imageUrl = imageService.projectImageUpload(email, multipartFile);
+        return RspTemplate.OK("프로젝트 이미지 업로드 성공", imageUrl);
     }
 
     @PostMapping("/{projectId}")

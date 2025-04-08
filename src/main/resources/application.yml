@@ -36,6 +36,11 @@ spring:
         project-id: ${spring.cloud.gcp.storage.project-id}
         bucket: ${spring.cloud.gcp.storage.bucket}
 
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 60MB
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -72,6 +77,3 @@ oauth:
     client-secret: ${oauth.google.client-secret}
     redirect-uri: ${oauth.google.redirect-uri}
     id-token-url: ${oauth.google.id-token-url}
-
-image:
-  default-project-image: ${spring.cloud.gcp.default.image}
