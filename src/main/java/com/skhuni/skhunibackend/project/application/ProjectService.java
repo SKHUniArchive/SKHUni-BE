@@ -51,6 +51,7 @@ public class ProjectService {
         validateProjectAccess(member, project);
 
         project.update(projectSaveReqDto.title(),
+                projectSaveReqDto.picture(),
                 projectSaveReqDto.introLine(),
                 projectSaveReqDto.introduction(),
                 projectSaveReqDto.githubLink1(),
