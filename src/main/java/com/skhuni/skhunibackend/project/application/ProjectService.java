@@ -1,6 +1,7 @@
 package com.skhuni.skhunibackend.project.application;
 
 import com.skhuni.skhunibackend.global.dto.PageInfoResDto;
+import com.skhuni.skhunibackend.global.properties.ImageProperties;
 import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
@@ -24,6 +25,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
+    private final ImageProperties imageProperties;
 
     @Transactional
     public void saveProject(String email, ProjectSaveReqDto projectSaveReqDto) {
@@ -31,6 +33,7 @@ public class ProjectService {
 
         Project project = Project.builder()
                 .title(projectSaveReqDto.title())
+                .picture(imageProperties.getDefaultProjectImage())
                 .introLine(projectSaveReqDto.introLine())
                 .introduction(projectSaveReqDto.introduction())
                 .githubLink1(projectSaveReqDto.githubLink1())
