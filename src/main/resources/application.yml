@@ -36,6 +36,11 @@ spring:
         project-id: ${spring.cloud.gcp.storage.project-id}
         bucket: ${spring.cloud.gcp.storage.bucket}
 
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 60MB
+
   jpa:
     hibernate:
       ddl-auto: update
