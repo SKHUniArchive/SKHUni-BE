@@ -5,6 +5,7 @@ import com.skhuni.skhunibackend.global.template.RspTemplate;
 import com.skhuni.skhunibackend.member.api.request.CodeReviewReqDto;
 import com.skhuni.skhunibackend.member.api.request.CoffeeChatReqDto;
 import com.skhuni.skhunibackend.member.api.request.MemberInfoUpdateReqDto;
+import com.skhuni.skhunibackend.member.api.response.MemberDetailInfoResDto;
 import com.skhuni.skhunibackend.member.api.response.MemberInfoResDto;
 import com.skhuni.skhunibackend.member.api.response.MembersResDto;
 import com.skhuni.skhunibackend.member.domain.EnrollmentStatus;
@@ -55,7 +56,9 @@ public interface MemberControllerDocs {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
     })
-    RspTemplate<MemberInfoResDto> getMemberInfo(@PathVariable Long memberId);
+    RspTemplate<MemberDetailInfoResDto> getMemberInfo(@PathVariable Long memberId,
+                                                      @RequestParam(defaultValue = "1") int page,
+                                                      @RequestParam(defaultValue = "10") int size);
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 정보를 수정합니다")
     @ApiResponses(value = {

@@ -9,7 +9,7 @@ public record MembersResDto(
         List<MemberInfoResDto> members,
         PageInfoResDto pageInfo
 ) {
-    public static MembersResDto from(List<MemberInfoResDto> members, PageInfoResDto pageInfoResDto) {
+    public static MembersResDto of(List<MemberInfoResDto> members, PageInfoResDto pageInfoResDto) {
         return MembersResDto.builder()
                 .members(members)
                 .pageInfo(pageInfoResDto)
