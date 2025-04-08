@@ -29,7 +29,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                                       boolean coffeeChat, boolean codeReview, int page, int size) {
         BooleanBuilder builder = new BooleanBuilder();
         if (email != null && !email.isBlank()) {
-            builder.and(member.email.eq(email));
+            builder.and(member.email.ne(email));
         }
 
         if (name != null && !name.isBlank()) {

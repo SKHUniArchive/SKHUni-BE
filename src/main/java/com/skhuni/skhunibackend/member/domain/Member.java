@@ -73,6 +73,7 @@ public class Member extends BaseEntity {
         this.name = name;
         this.picture = picture;
         this.socialType = socialType;
+        this.contactEmail = email;
     }
 
     public void updateInfo(String name, String contactEmail, String studentId, String introLine, String introduction,
