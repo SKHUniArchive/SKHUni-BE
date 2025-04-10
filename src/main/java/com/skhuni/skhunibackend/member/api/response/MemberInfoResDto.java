@@ -9,6 +9,7 @@ import lombok.Builder;
 @Builder
 public record MemberInfoResDto(
         Long memberId,
+        boolean isMine,
         String email,
         String name,
         String picture,
@@ -27,9 +28,10 @@ public record MemberInfoResDto(
         String etc1,
         String etc2
 ) {
-    public static MemberInfoResDto of(Member member, MemberLink memberLink) {
+    public static MemberInfoResDto of(Member member, MemberLink memberLink, boolean isMine) {
         return MemberInfoResDto.builder()
                 .memberId(member.getId())
+                .isMine(isMine)
                 .email(member.getEmail())
                 .name(member.getName())
                 .picture(member.getPicture())

@@ -56,7 +56,8 @@ public interface MemberControllerDocs {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "401", description = "인증실패", content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
     })
-    RspTemplate<MemberDetailInfoResDto> getMemberInfo(@PathVariable Long memberId,
+    RspTemplate<MemberDetailInfoResDto> getMemberInfo(@AuthenticatedEmail String email,
+                                                      @PathVariable Long memberId,
                                                       @RequestParam(defaultValue = "1") int page,
                                                       @RequestParam(defaultValue = "10") int size);
 
