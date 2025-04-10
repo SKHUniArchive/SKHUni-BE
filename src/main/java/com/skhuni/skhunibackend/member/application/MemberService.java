@@ -36,14 +36,15 @@ public class MemberService {
                                     EnrollmentStatus enrollmentStatus, boolean coffeeChat,
                                     boolean codeReview, int page, int size) {
         Page<Member> members = memberRepository
-                .searchMembers(email, name, field, enrollmentStatus, coffeeChat, codeReview, page, size);
+                .searchMembers(name, field, enrollmentStatus, coffeeChat, codeReview, page, size);
 
         List<MemberInfoResDto> memberInfoResDtos = members.getContent()
                 .stream()
                 .map(m -> {
                     MemberLink memberLink = memberLinkRepository.findByMemberId(m.getId())
                             .orElseThrow(MemberNotFoundException::new);
-                    return MemberInfoResDto.of(m, memberLink);
+                    boolean isMine = email != null && email.equals(m.getEmail());
+                    return MemberInfoResDto.of(m, memberLink, isMine);
                 })
                 .toList();
 
@@ -55,15 +56,19 @@ public class MemberService {
         MemberLink memberLink = memberLinkRepository.findByMemberId(member.getId())
                 .orElseThrow(MemberNotFoundException::new);
 
-        return MemberInfoResDto.of(member, memberLink);
+        boolean isMine = email != null && email.equals(member.getEmail());
+
+        return MemberInfoResDto.of(member, memberLink, isMine);
     }
 
-    public MemberInfoResDto getMemberInfo(Long memberId) {
+    public MemberInfoResDto getMemberInfo(String email, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         MemberLink memberLink = memberLinkRepository.findByMemberId(member.getId())
                 .orElseThrow(MemberNotFoundException::new);
 
-        return MemberInfoResDto.of(member, memberLink);
+        boolean isMine = email != null && email.equals(member.getEmail());
+
+        return MemberInfoResDto.of(member, memberLink, isMine);
     }
 
     @Transactional

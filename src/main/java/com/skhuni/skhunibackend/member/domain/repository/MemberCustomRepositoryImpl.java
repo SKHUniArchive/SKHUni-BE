@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.skhuni.skhunibackend.member.domain.EnrollmentStatus;
 import com.skhuni.skhunibackend.member.domain.FieldType;
 import com.skhuni.skhunibackend.member.domain.Member;
+import com.skhuni.skhunibackend.member.domain.Role;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,12 +26,9 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     }
 
     @Override
-    public Page<Member> searchMembers(String email, String name, FieldType field, EnrollmentStatus enrollmentStatus,
+    public Page<Member> searchMembers(String name, FieldType field, EnrollmentStatus enrollmentStatus,
                                       boolean coffeeChat, boolean codeReview, int page, int size) {
         BooleanBuilder builder = new BooleanBuilder();
-        if (email != null && !email.isBlank()) {
-            builder.and(member.email.ne(email));
-        }
 
         if (name != null && !name.isBlank()) {
             builder.and(member.name.containsIgnoreCase(name));
@@ -51,6 +49,8 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         if (codeReview) {
             builder.and(member.isCodeReviewOpen.isTrue());
         }
+
+        builder.and(member.role.eq(Role.ROLE_STUDENT));
 
         List<Member> content = queryFactory
                 .selectFrom(member)

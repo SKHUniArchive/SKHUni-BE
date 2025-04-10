@@ -60,10 +60,11 @@ public class MemberController implements MemberControllerDocs {
     }
 
     @GetMapping("/{memberId}")
-    public RspTemplate<MemberDetailInfoResDto> getMemberInfo(@PathVariable Long memberId,
+    public RspTemplate<MemberDetailInfoResDto> getMemberInfo(@AuthenticatedEmail String email,
+                                                             @PathVariable Long memberId,
                                                              @RequestParam(defaultValue = "1") int page,
                                                              @RequestParam(defaultValue = "10") int size) {
-        MemberInfoResDto info = memberService.getMemberInfo(memberId);
+        MemberInfoResDto info = memberService.getMemberInfo(email, memberId);
         ProjectsResDto projects = projectService.getMemberProjects(memberId, page, size);
         MemberDetailInfoResDto memberDetailInfoResDto = MemberDetailInfoResDto.of(info, projects);
         return RspTemplate.OK(memberDetailInfoResDto);
