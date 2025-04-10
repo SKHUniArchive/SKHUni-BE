@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 public interface MemberCustomRepository {
 
     Page<Member> searchMembers(
-            String email,
             String name,
             FieldType field,
             EnrollmentStatus enrollmentStatus,

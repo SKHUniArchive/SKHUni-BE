@@ -48,7 +48,7 @@ public class EmailRequestService {
     private String createCoffeeChatContent(Member member, String content) {
         String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
         return "<div><p>신청인: " + member.getName() + "</p>" +
-                "<p>이메일: " + member.getEmail() + "</p>" +
+                "<p>이메일: " + member.getContactEmail() + "</p>" +
                 "<p>신청시간: " + formattedDate + "</p>" +
                 " <p>내용: " + content + "</p></div>";
     }
@@ -56,7 +56,7 @@ public class EmailRequestService {
     private String createCodeReviewContent(Member member, String githubLink, String content) {
         String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
         return "<div><p>신청인: " + member.getName() + "</p>" +
-                "<p>이메일: " + member.getEmail() + "</p>" +
+                "<p>이메일: " + member.getContactEmail() + "</p>" +
                 "<p>신청시간: " + formattedDate + "</p>" +
                 "<p>github: " + githubLink + "</p>" +
                 " <p>내용: " + content + "</p></div>";
