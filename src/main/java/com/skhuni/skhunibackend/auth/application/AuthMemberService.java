@@ -3,6 +3,7 @@ package com.skhuni.skhunibackend.auth.application;
 import com.skhuni.skhunibackend.auth.api.dto.response.MemberLoginResDto;
 import com.skhuni.skhunibackend.auth.api.dto.response.UserInfo;
 import com.skhuni.skhunibackend.auth.exception.ExistsMemberEmailException;
+import com.skhuni.skhunibackend.global.discord.util.DiscordWebhookUtil;
 import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.MemberLink;
 import com.skhuni.skhunibackend.member.domain.Role;
@@ -21,6 +22,7 @@ public class AuthMemberService {
 
     private final MemberRepository memberRepository;
     private final MemberLinkRepository memberLinkRepository;
+    private final DiscordWebhookUtil discordWebhookUtil;
 
     @Transactional
     public MemberLoginResDto saveUserInfo(UserInfo userInfo, SocialType provider) {
@@ -53,6 +55,10 @@ public class AuthMemberService {
                         .member(member)
                         .build()
         );
+
+        int totalMembers = memberRepository.findAll().size();
+        discordWebhookUtil.sendDiscordMessage(String.format("%d번째 회원입니다!", totalMembers), member.getId().toString());
+
         return member;
     }
 
