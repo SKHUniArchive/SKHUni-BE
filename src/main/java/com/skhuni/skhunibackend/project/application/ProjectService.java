@@ -1,6 +1,7 @@
 package com.skhuni.skhunibackend.project.application;
 
 import com.skhuni.skhunibackend.global.dto.PageInfoResDto;
+import com.skhuni.skhunibackend.global.properties.DefaultImageProperties;
 import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
@@ -24,14 +25,17 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
+    private final DefaultImageProperties defaultImageProperties;
 
     @Transactional
     public void saveProject(String email, ProjectSaveReqDto projectSaveReqDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
 
+        String image = resolveProjectImage(projectSaveReqDto.picture());
+
         Project project = Project.builder()
                 .title(projectSaveReqDto.title())
-                .picture(projectSaveReqDto.picture())
+                .picture(image)
                 .introLine(projectSaveReqDto.introLine())
                 .introduction(projectSaveReqDto.introduction())
                 .githubLink1(projectSaveReqDto.githubLink1())
@@ -41,6 +45,14 @@ public class ProjectService {
                 .build();
 
         projectRepository.save(project);
+    }
+
+    private String resolveProjectImage(String picture) {
+        if (picture.isBlank()) {
+            return defaultImageProperties.getDefaultProjectImage();
+        }
+        
+        return picture;
     }
 
     @Transactional
