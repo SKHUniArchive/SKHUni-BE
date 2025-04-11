@@ -53,6 +53,8 @@ logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+  discord:
+    webhook-url: ${logging.discord.webhook-url}
 
 myapp:
   api-url: ${myapp.api-url}
@@ -77,3 +79,6 @@ oauth:
     client-secret: ${oauth.google.client-secret}
     redirect-uri: ${oauth.google.redirect-uri}
     id-token-url: ${oauth.google.id-token-url}
+
+image:
+  default-project-image: ${image.default-project-image}

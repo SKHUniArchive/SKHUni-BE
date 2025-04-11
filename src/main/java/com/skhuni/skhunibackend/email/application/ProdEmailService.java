@@ -2,6 +2,7 @@ package com.skhuni.skhunibackend.email.application;
 
 import com.skhuni.skhunibackend.email.exception.InvalidCodeException;
 import com.skhuni.skhunibackend.email.exception.InvalidEmailAddressException;
+import com.skhuni.skhunibackend.global.discord.util.DiscordWebhookUtil;
 import com.skhuni.skhunibackend.member.domain.Member;
 import com.skhuni.skhunibackend.member.domain.repository.MemberRepository;
 import com.skhuni.skhunibackend.member.exception.MemberNotFoundException;
@@ -27,6 +28,7 @@ public class ProdEmailService implements EmailService {
     private String authCodeExpireTime;
 
     private final MemberRepository memberRepository;
+    private final DiscordWebhookUtil discordWebhookUtil;
     private final RedisTemplate<String, String> redisTemplate;
     private final JavaMailSender emailSender;
     private String authCode;
@@ -42,6 +44,11 @@ public class ProdEmailService implements EmailService {
 
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         member.updateStudentRole();
+
+        discordWebhookUtil.sendDiscordMessage(
+                String.format("%s님이 재학생 인증을 완료했습니다!", member.getName()),
+                member.getId().toString()
+        );
     }
 
     private void validateAuthCode(String storedCode, String inputCode) {
