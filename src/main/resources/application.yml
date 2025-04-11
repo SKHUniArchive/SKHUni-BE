@@ -77,3 +77,6 @@ oauth:
     client-secret: ${oauth.google.client-secret}
     redirect-uri: ${oauth.google.redirect-uri}
     id-token-url: ${oauth.google.id-token-url}
+
+image:
+  default-project-image: ${image.default-project-image}
